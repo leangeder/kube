@@ -1,0 +1,17 @@
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-rabbitmq-slave
+  labels:
+    app: rabbitmq
+    role: backend
+    infra: s8
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    # kind: StatefulSet
+    kind: Deployment
+    name: rabbitmq-slave
+  minReplicas: 3
+  maxReplicas: 7

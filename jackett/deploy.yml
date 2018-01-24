@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jackett
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jackett
+    spec:
+      containers:
+      - name: jackett
+        image: linuxserver/jackett
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9117
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: "Europe/Paris"
+        volumeMounts:
+        - name: jackett
+          mountPath: /config
+          subPath: docker/jackett
+        - name: jackett
+          mountPath: /downloads
+          subPath: downloads
+      volumes:
+      - name: jackett
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

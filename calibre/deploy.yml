@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: calibre
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: calibre
+    spec:
+      containers:
+      - name: calibre
+        image: linuxserver/calibre-web
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8083
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: CALIBRE_PORT
+          value: "8083"
+        volumeMounts:
+        - name: calibre
+          mountPath: /config
+          subPath: docker/calibre
+        - name: calibre
+          mountPath: /books
+          subPath: Ebooks
+      volumes:
+      - name: calibre
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

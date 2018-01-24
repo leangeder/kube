@@ -1,0 +1,80 @@
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: torrent-protocole
+#   labels:
+#     app: torrent
+# spec:
+#   selector:
+#     app: torrent
+#   ports:
+#     - name: tcp-6881
+#       port: 6881
+#       protocol: TCP
+#     - name: udp-6881
+#       port: 6881
+#       protocol: UDP
+#     - name: tcp-51413
+#       port: 51413
+#       protocol: TCP
+#     - name: udp-51413
+#       port: 51413
+#       protocol: UDP
+#   externalIPs:
+#   - 62.210.14.17
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: torrent
+#   labels:
+#     app: torrent
+# spec:
+#   ports:
+#   - name: http
+#     port: 80
+#   - name: rtorrent-5000
+#     port: 5000
+#   selector:
+#     app: torrent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: torrent-protocole
+  labels:
+    app: torrent
+spec:
+  selector:
+    app: torrent
+  ports:
+    - name: tcp-49160
+      port: 49160
+      protocol: TCP
+    - name: udp-49160
+      port: 49160
+      protocol: UDP
+    - name: tcp-49161
+      port: 49161
+      protocol: TCP
+    - name: udp-49161
+      port: 49161
+      protocol: UDP
+  externalIPs:
+  - 62.210.14.17
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: torrent
+  labels:
+    app: torrent
+spec:
+  ports:
+  - name: http
+    port: 80
+  - name: rtorrent-5000
+    port: 5000
+  selector:
+    app: torrent

@@ -1,0 +1,86 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq
+    role: backend
+    infra: s8
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        component: rabbitmq-management
+        role: backend
+        infra: s8
+    spec:
+      volumes:
+      - name: current-config
+        configMap:
+          name: config.general.rabbitmq
+          items:
+          - key: rabbitmq.definitions
+            path: definitions.json
+      containers:
+      - name: rabbitmq
+        image: 'rabbitmq:management-alpine'
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - rabbitmqctl
+            - status
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - rabbitmqctl
+            - status
+          initialDelaySeconds: 10
+          timeoutSeconds: 3
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: RABBITMQ_ERLANG_COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: secret.general.rabbitmq
+              key: rabbitmq.cookie
+        - name: RABBITMQ_USE_LONGNAME
+          value: "true"
+        - name: AUTOCLUSTER_LOG_LEVEL
+          value: "debug"
+        - name: AUTOCLUSTER_TYPE
+          value: "k8s"
+        - name: AUTOCLUSTER_CLEANUP
+          value: "true"
+        - name: CLEANUP_INTERVAL
+          value: "30"
+        - name: CLEANUP_WARN_ONLY
+          value: "false"
+        ports:
+        - name: cluster-port
+          containerPort: 4369
+        - name: amqp-0
+          containerPort: 5671
+        - name: amqp-1
+          containerPort: 5672
+        - name: clustering
+          containerPort: 25672
+        - name: http
+          containerPort: 15672
+        volumeMounts:
+        - name: current-config
+          mountPath: /tmp/rabbitmq

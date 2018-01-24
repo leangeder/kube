@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lychee
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.frontend.passHostHeader: "true"
+    traefik.backend.loadbalancer.stickey: "true"
+spec:
+  rules:
+  - host: photo.leangeder.eu
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: lychee
+          servicePort: http

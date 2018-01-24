@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: torrent
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    # traefik.frontend.passHostHeader: "true"
+    # traefik.backend.loadbalancer.stickey: "true"
+spec:
+  rules:
+  - host: torrent.leangeder.eu
+    http:
+      paths:
+      - backend:
+          serviceName: torrent
+          servicePort: http

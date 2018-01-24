@@ -1,0 +1,28 @@
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-elasticsearch-master
+  labels:
+    role: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: elasticsearch-master
+  minReplicas: 3
+  maxReplicas: 4
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-elasticsearch-client
+  labels:
+    role: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: elasticsearch-client
+  minReplicas: 4
+  maxReplicas: 4

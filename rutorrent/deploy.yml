@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: torrent
+  labels:
+    app: torrent
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: torrent
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: torrent
+        # image: "linuxserver/rutorrent"
+        # imagePullPolicy: Always
+        # lifecycle:
+        #   preStop:
+        #     exec:
+        #       command:
+        #         - "rm"
+        #         - "/downloads/sessions/rtorrent.lock"
+        # ports:
+        # - containerPort: 80
+        # - containerPort: 5000
+        # - containerPort: 51413
+        # - containerPort: 6881
+        # env:
+        # - name: PGID
+        #   value: "1000"
+        # - name: PUID
+        #   value: "1000"
+        # - name: TZ
+        #   value: "Europe/Paris"
+        # volumeMounts:
+        # - name: rtorrent-config
+        #   mountPath: /config/rtorrent/rtorrent.rc
+        #   subPath: rtorrent.rc
+        # - name: rutorrent
+        #   mountPath: /config/rutorrent
+        #   subPath: docker/rutorrent
+        # - name: rutorrent
+        #   mountPath: /downloads
+        #   subPath: downloads
+        image: "diameter/rtorrent-rutorrent"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        - containerPort: 49160
+        - containerPort: 49161
+        env:
+        - name: GRP_ID
+          value: "1000"
+        - name: USR_ID
+          value: "1000"
+        volumeMounts:
+        - name: rutorrent
+          mountPath: /downloads/.rtorrent/session
+          subPath: downloads/sessions
+        - name: rutorrent
+          mountPath: /downloads/.rtorrent/watch
+          subPath: downloads/watched
+        - name: rutorrent
+          mountPath: /downloads
+          subPath: downloads
+      volumes:
+      - name: rtorrent-config
+        configMap:
+          name: rtorrent-config
+      - name: rutorrent
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

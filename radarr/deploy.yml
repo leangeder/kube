@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: radarr
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+      - name: radarr
+        image: linuxserver/radarr
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7878
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: radarr
+          mountPath: /config
+          subPath: docker/raddar
+        - name: radarr
+          mountPath: /downloads
+          subPath: downloads/Movies
+        - name: radarr
+          mountPath: /movies
+          subPath: Movies
+      volumes:
+      - name: radarr
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

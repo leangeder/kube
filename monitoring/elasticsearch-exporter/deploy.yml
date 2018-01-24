@@ -1,0 +1,78 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: elasticsearch-exporter
+  # namespace: monitoring
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      name: elasticsearch-exporter
+      labels:
+        app: prometheus
+        component: elasticsearch-exporter
+      annotations:
+        prometheus.io.scrape: "true"
+        prometheus.io.port: "9108"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: elasticsearch-exporter
+        image: 'justwatch/elasticsearch_exporter:1.0.1'
+        command:
+        - /bin/elasticsearch_exporter
+        - -es.uri=http://elasticsearch-client:9200
+        - -es.all=true
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9108
+          initialDelaySeconds: 10
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9108
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 25m
+            memory: 64Mi
+        env:
+        - name: ELASTICSEARCH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: config.general
+              key: url.internal.elasticsearch
+        securityContext:
+          capabilities:
+            drop:
+            - SETPCAP
+            - MKNOD
+            - AUDIT_WRITE
+            - CHOWN
+            - NET_RAW
+            - DAC_OVERRIDE
+            - FOWNER
+            - FSETID
+            - KILL
+            - SETGID
+            - SETUID
+            - NET_BIND_SERVICE
+            - SYS_CHROOT
+            - SETFCAP
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 9108
+      restartPolicy: Always

@@ -1,0 +1,44 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq-exporter
+  labels:
+    app: rabbitmq-exporter
+    role: exporter
+    infra: s8
+spec:
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 10%
+      maxSurge: 10%
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-exporter
+        role: exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+    spec:
+      containers:
+      - name: rabbitmq-exporter
+        # image: 'yannart/rabbitmq-exporter'
+        image: 'kbudde/rabbitmq-exporter'
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: RABBIT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: config.general
+              key: url.internal.rabbitmq-management
+        - name: RABBIT_USER
+          value: "guest"
+        - name: RABBIT_PASSWORD
+          value: "guest"
+        ports:
+        - containerPort: 9090
+          name: ui
+          protocol: TCP

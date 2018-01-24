@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ubooquity
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: book
+    spec:
+      containers:
+      - name: book
+        image: linuxserver/ubooquity
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2202
+        - containerPort: 2203
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: ubooquity
+          mountPath: /config
+          subPath: docker/ubooquity
+        - name: ubooquity
+          mountPath: /books
+          subPath: Ebooks/Books
+        - name: ubooquity
+          mountPath: /comics
+          subPath: Ebooks/Comics
+        - name: ubooquity
+          mountPath: /files
+          subPath: Ebooks/Files
+      volumes:
+      - name: ubooquity
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

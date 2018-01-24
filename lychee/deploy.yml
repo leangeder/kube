@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lychee
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lychee
+    spec:
+      containers:
+      - name: lychee
+        image: linuxserver/lychee
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: lychee
+          mountPath: /config
+          subPath: docker/lychee
+        - name: lychee
+          mountPath: /pictures
+          subPath: Photo
+      volumes:
+      - name: lychee
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
