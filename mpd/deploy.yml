@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mpd
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mpd
+    spec:
+      securityContext:
+        runAsUser: 101
+        fsGroup: 29
+      containers:
+      - name: mpd
+        image: jess/mpd
+        securityContext:
+          allowPrivilegeEscalation: false
+        command:
+        - "mpd"
+        - "--stdout"
+        - "--no-daemon"
+        - "--verbose"
+        - "/home/mpd/conf/mpd.conf"
+        ports:
+        - name: db
+          containerPort: 6600
+        - name: stream
+          containerPort: 8000
+        volumeMounts:
+        - name: mpd
+          mountPath: /home/mpd/Music
+          subPath: Music
+        - name: mpd
+          mountPath: /home/mpd/.config/mpd
+          subPath: docker/mpd
+        - name: current-config
+          mountPath: /home/mpd/conf
+      volumes:
+      - name: mpd
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
+      - name: current-config
+        configMap:
+          name: config.general.mpd
+          items:
+          - key: mpd.conf
+            path: mpd.conf
+          defaultMode: 420

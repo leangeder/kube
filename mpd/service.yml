@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mpd-stream
+  labels:
+    app: mpd
+spec:
+  ports:
+  - name: stream
+    port: 8000
+  selector:
+    app: mpd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mpd-control
+  labels:
+    app: mpd
+spec:
+  type: ClusterIP
+  externalIPs:
+  - 62.210.14.17
+  ports:
+  - name: db
+    port: 6600
+    targetPort: 6600
+  selector:
+    app: mpd
