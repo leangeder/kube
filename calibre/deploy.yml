@@ -11,24 +11,21 @@ spec:
     spec:
       containers:
       - name: calibre
-        image: linuxserver/calibre-web
+        image: regueiro/calibre-server:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8083
-        env:
-        - name: PGID
-          value: "1000"
-        - name: PUID
-          value: "1000"
-        - name: CALIBRE_PORT
-          value: "8083"
+        - name: calibre
+          containerPort: 8080
         volumeMounts:
         - name: calibre
-          mountPath: /config
-          subPath: docker/calibre
+          mountPath: /conf
+          subPath: Ebooks/conf
         - name: calibre
-          mountPath: /books
-          subPath: Ebooks
+          mountPath: /download
+          subPath: downloads/Books
+        - name: calibre
+          mountPath: /opt/calibre/library
+          subPath: Ebooks/Library
       volumes:
       - name: calibre
         glusterfs:
