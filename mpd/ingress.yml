@@ -4,14 +4,11 @@ metadata:
   name: mpd
   annotations:
     kubernetes.io/ingress.class: "traefik"
-    traefik.frontend.passHostHeader: "true"
-    traefik.backend.loadbalancer.stickey: "true"
 spec:
   rules:
   - host: music.leangeder.eu
     http:
       paths:
-      - path: /
-        backend:
+      - backend:
           serviceName: mpd-stream
-          servicePort: http
+          servicePort: stream

@@ -9,34 +9,39 @@ spec:
       labels:
         app: mpd
     spec:
-      securityContext:
-        runAsUser: 101
-        fsGroup: 29
       containers:
       - name: mpd
-        image: jess/mpd
-        securityContext:
-          allowPrivilegeEscalation: false
+        # image: jess/mpd
+        image: vimagick/mpd
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command:
+        #       - /bin/bash
+        #       - -xc
+        #       - >
+        #         apk -U add mpd;
         command:
-        - "mpd"
-        - "--stdout"
-        - "--no-daemon"
-        - "--verbose"
-        - "/home/mpd/conf/mpd.conf"
+        - "/bin/sh"
+        - "-xc"
+        - >
+          apk -U add mpd;
+          mpd --stdout --no-daemon --verbose;
         ports:
         - name: db
           containerPort: 6600
         - name: stream
-          containerPort: 8000
+          containerPort: 8080
         volumeMounts:
         - name: mpd
-          mountPath: /home/mpd/Music
+          mountPath: /var/lib/mpd/Music
           subPath: Music
         - name: mpd
-          mountPath: /home/mpd/.config/mpd
+          mountPath: /var/lib/mpd
           subPath: docker/mpd
         - name: current-config
-          mountPath: /home/mpd/conf
+          mountPath: /etc/mpd.conf
+          subPath: mpd.conf
       volumes:
       - name: mpd
         glusterfs:
@@ -46,7 +51,3 @@ spec:
       - name: current-config
         configMap:
           name: config.general.mpd
-          items:
-          - key: mpd.conf
-            path: mpd.conf
-          defaultMode: 420

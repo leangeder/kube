@@ -8,7 +8,7 @@ metadata:
 spec:
   ports:
   - name: stream
-    port: 8000
+    port: 8080
   selector:
     app: mpd
 ---
