@@ -57,7 +57,7 @@ data:
     #
     # Symbolic link behavior ######################################################
     #
-    # follow_outside_symlinks          "yes"
+    follow_outside_symlinks           "yes"
     #
     follow_inside_symlinks            "yes"
     #
@@ -127,11 +127,12 @@ data:
     #    type                           "fifo"
     #    name                           "fifo"
     #    path                           "/tmp/mpd.fifo"
-    #    format                         "44100:16:1"
-    #    # format                        "44100:16:2"
+    #    # format                         "44100:16:1"
+    #    format                        "44100:16:2"
     # }
     #
-    samplerate_converter             "Fastest Sinc Interpolator"
+    # samplerate_converter             "Fastest Sinc Interpolator"
+    samplerate_converter             "Best Sinc Interpolator"
     #
     ###############################################################################
     #
