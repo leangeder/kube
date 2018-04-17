@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: shaarli
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: bookmark.leangeder.eu
+    http:
+      paths:
+      - backend:
+          serviceName: shaarli
+          servicePort: http

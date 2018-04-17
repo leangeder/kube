@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shaarli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shaarli
+    spec:
+      containers:
+      - name: shaarli
+        image: shaarli/shaarli
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+        - name: shaarli
+          mountPath: /var/www/shaarli/data
+          subPath: docker/shaarli
+      volumes:
+      - name: shaarli
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

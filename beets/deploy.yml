@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: beets
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: beets
+    spec:
+      containers:
+      - name: beets
+        image: linuxserver/beets
+        # command:
+        # - "/bin/sh"
+        # - "-xc"
+        # - >
+        #   apk -U add beets;
+        #   beets --stdout --no-daemon --verbose;
+        ports:
+        # - name: db
+        #   containerPort: 6600
+        - name: http
+          containerPort: 8080
+        volumeMounts:
+        - name: beets
+          mountPath: /music
+          subPath: Music
+        - name: beets
+          mountPath: /downloads
+          subPath: downloads/Music
+        - name: beets
+          mountPath: /config
+          subPath: docker/beets
+        - name: current-config
+          mountPath: /etc/mpd.conf
+          subPath: mpd.conf
+      volumes:
+      - name: beets
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
+      - name: current-config
+        configMap:
+          name: config.general.beets

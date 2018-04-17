@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: beets
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: music.leangeder.eu
+    http:
+      paths:
+      - backend:
+          serviceName: beets-stream
+          servicePort: stream

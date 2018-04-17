@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mylar
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mylar
+    spec:
+      containers:
+      - name: mylar
+        image: linuxserver/mylar
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8090
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: mylar
+          mountPath: /config
+          subPath: docker/mylar
+        - name: mylar
+          mountPath: /downloads
+          subPath: downloads/Comics
+        - name: mylar
+          mountPath: /comics
+          subPath: Comics
+      volumes:
+      - name: mylar
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
