@@ -36,9 +36,15 @@ data:
     backend traefik {
       .host = "traefik.kube-system.svc.cluster.local";
       .port = "80";
-      .connect_timeout = 0.4s;
+      .probe = {
+        .interval  = 5s;
+        .timeout   = 1s;
+        .window    = 5;
+        .threshold = 3;
+      }
       .first_byte_timeout = 300s;
-      .between_bytes_timeout = 60s;
+      .connect_timeout = 0.4s;
+      .between_bytes_timeout = 0.2s;
     }
 
 
