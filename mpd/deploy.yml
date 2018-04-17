@@ -11,16 +11,8 @@ spec:
     spec:
       containers:
       - name: mpd
-        # image: jess/mpd
-        image: vimagick/mpd
-        # lifecycle:
-        #   postStart:
-        #     exec:
-        #       command:
-        #       - /bin/bash
-        #       - -xc
-        #       - >
-        #         apk -U add mpd;
+        # image: vimagick/mpd
+        image: alpine
         command:
         - "/bin/sh"
         - "-xc"

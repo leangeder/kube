@@ -131,8 +131,8 @@ data:
     #    format                        "44100:16:2"
     # }
     #
-    # samplerate_converter             "Fastest Sinc Interpolator"
-    samplerate_converter             "Best Sinc Interpolator"
+    samplerate_converter             "Fastest Sinc Interpolator"
+    # samplerate_converter             "Best Sinc Interpolator"
     #
     ###############################################################################
     #
