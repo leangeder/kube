@@ -1,0 +1,105 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: varnish
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: varnish
+    spec:
+      containers:
+      - name: varnish
+        image: million12/varnish
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: VCL_CONFIG
+          value: "/etc/varnish/default.vcl"
+        - name: CACHE_SIZE
+          value: "64m"
+        - name: VARNISHD_PARAMS
+          value: "-p default_ttl=3600 -p default_grace=3600"
+        volumeMounts:
+        - name: current-config
+          mountPath: /etc/varnish/default.vcl
+          subPath: default.vcl
+        resources:
+          requests:
+            memory: "64Mi"
+          limits:
+            memory: "100Mi"
+      volumes:
+      - name: varnish
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
+      - name: current-config
+        configMap:
+          name: config.general.varnish
+# ---
+# apiVersion: apps/v1beta1
+# kind: StatefulSet
+# metadata:
+#   name: varnish
+# spec:
+#   replicas: 2
+#   serviceName: default
+#   podManagementPolicy: "Parallel"
+#   template:
+#     metadata:
+#       labels:
+#         app: varnish
+#     spec:
+#       affinity:
+#         podAntiAffinity:
+#           requiredDuringSchedulingIgnoredDuringExecution:
+#           - labelSelector:
+#               matchExpressions:
+#               - key: app
+#                 operator: In
+#                 values:
+#                 - varnish
+#             topologyKey: kubernetes.io/hostname
+#       containers:
+#       - name: varnish
+#         image: million12/varnish
+#         imagePullPolicy: Always
+#         ports:
+#         - containerPort: 80
+#         env:
+#         - name: PGID
+#           value: "1000"
+#         - name: PUID
+#           value: "1000"
+#         - name: VCL_CONFIG
+#           value: "/etc/varnish/default.vcl"
+#         - name: CACHE_SIZE
+#           value: "64m"
+#         - name: VARNISHD_PARAMS
+#           value: "-p default_ttl=3600 -p default_grace=3600"
+#         volumeMounts:
+#         - name: current-config
+#           mountPath: /etc/varnish/default.vcl
+#           subPath: default.vcl
+#         resources:
+#           requests:
+#             memory: "64Mi"
+#           limits:
+#             memory: "100Mi"
+#       volumes:
+#       - name: varnish
+#         glusterfs:
+#           endpoints: glusterfs-cluster
+#           path: data
+#           readOnly: false
+#       - name: current-config
+#         configMap:
+#           name: config.general.varnish
