@@ -13,13 +13,13 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
-      # [entryPoints.http.redirect]
-      # entryPoint = "https"
-      # # [entryPoints.https.auth.basic]
-      # # users = ["leangeder:$apr1$k2qslCn6$0OgA8vhnyC8nJ99YfJMOM/"]
-      # [entryPoints.https]
-      # address = ":443"
-      # [entryPoints.https.tls]
+    #   [entryPoints.http.redirect]
+    #   entryPoint = "https"
+    #   # [entryPoints.https.auth.basic]
+    #   # users = ["leangeder:$apr1$k2qslCn6$0OgA8vhnyC8nJ99YfJMOM/"]
+    #   [entryPoints.https]
+    #   address = ":443"
+    #   [entryPoints.https.tls]
 
     [kubernetes]
 
@@ -34,7 +34,9 @@ data:
     # email = "40153@supinfo.com"
     # storage = "/acme/acme.json"
     # entryPoint = "https"
-    # onDemand = true
     # onHostRule = true
     # [[acme.domains]]
     # main = "leangeder.eu"
+    # sans = ["movie.leangeder.eu", "serie.leangeder.eu", "nzb.leangeder.eu", "book.leangeder.eu", "music.leangeder.eu"]
+    # [acme.httpChallenge]
+    #   entryPoint = "http"

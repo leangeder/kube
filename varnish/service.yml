@@ -11,7 +11,7 @@ spec:
     port: 80
   - name: https
     port: 443
-  externalIPs:
-  - 62.210.14.17
+  # externalIPs:
+  # - 62.210.14.17
   selector:
     app: varnish

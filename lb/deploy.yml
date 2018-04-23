@@ -101,50 +101,47 @@ spec:
             topologyKey: kubernetes.io/hostname
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
-      # hostNetwork: true
       containers:
-        - name: traefik-ingress-lb
-          image: "traefik"
-          imagePullPolicy: Always
-          # securityContext:
-          #   privileged: true
-          volumeMounts:
-            - mountPath: "/config"
-              name: "config"
-            - mountPath: "/acme"
-              name: "acme"
-          readinessProbe:
-            tcpSocket:
-              port: 80
-            failureThreshold: 1
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 2
-          livenessProbe:
-            tcpSocket:
-              port: 80
-            failureThreshold: 3
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 2
-          ports:
-          - name: http
-            containerPort: 80
-          #   hostPort: 80
-          - name: https
-            containerPort: 443
-          #   hostPort: 443
-          - name: admin
-            containerPort: 8080
-          args:
-            - --configfile=/config/traefik.toml
+      - name: traefik-ingress-lb
+        image: "traefik"
+        imagePullPolicy: Always
+        args:
+          - --configfile=/config/traefik.toml
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        - name: admin
+          containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: "config"
+          mountPath: "/config"
+        - name: "acme"
+          mountPath: "/acme"
+          subPath: docker/lb/acme
       volumes:
-        - name: config
-          configMap:
-            name: traefik-conf
-        - name: acme
-          hostPath:
-           path: /opt/docker/traefik
-           # type: Directory
+      - name: config
+        configMap:
+          name: traefik-conf
+      - name: acme
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

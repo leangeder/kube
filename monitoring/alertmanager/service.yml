@@ -1,19 +1,18 @@
 apiVersion: v1
 kind: Service
-  name: alertmanager
-  namespace: monitoring
 metadata:
+  name: alertmanager
   labels:
-    name: alertmanager
-  annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/path: '/metrics'
+    app: alertmanager
 spec:
-  type: NodePort
   ports:
-  - name: alertmanager
-    protocol: TCP
+  - name: http
     port: 9093
+    protocol: TCP
     targetPort: 9093
+  - name: meshpeer
+    port: 6783
+    protocol: TCP
+    targetPort: 6783
   selector:
     app: alertmanager
