@@ -13,6 +13,9 @@ spec:
       - name: calibre
         image: regueiro/calibre-server:latest
         imagePullPolicy: Always
+        args:
+        - "--log=/dev/stdout"
+        - "--url-prefix=/Books/"
         ports:
         - name: calibre
           containerPort: 8080

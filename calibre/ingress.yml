@@ -8,10 +8,10 @@ metadata:
     traefik.backend.loadbalancer.stickey: "true"
 spec:
   rules:
-  - host: tmp.leangeder.eu
+  - host: file.leangeder.eu
     http:
       paths:
-      - path: /
+      - path: /Books
         backend:
           serviceName: calibre
           servicePort: http
