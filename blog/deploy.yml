@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blog
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blog
+    spec:
+      containers:
+      - name: blog
+        image: ghost:alpine
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2368
+        env:
+        volumeMounts:
+        - name: blog
+          mountPath: /var/lib/ghost/content
+          subPath: Others/blog
+      volumes:
+      - name: blog
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
