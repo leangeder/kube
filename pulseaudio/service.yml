@@ -6,7 +6,9 @@ metadata:
     app: pulseaudio
 spec:
   ports:
-  - name: http
-    port: 8989
+  - name: rtp
+    port: 5004
   selector:
     app: pulseaudio
+  externalIPs:
+  - 62.210.14.17

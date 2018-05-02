@@ -11,28 +11,38 @@ spec:
     spec:
       containers:
       - name: pulseaudio
-        image: linuxserver/pulseaudio
+        image: jess/pulseaudio
+        # image: debian
+        # command:
+        # - "/bin/bash"
+        # - "-xc"
+        # - >
+        #   apt-get update;
+        #   apt-get install -y --no-install-recommends pulseaudio;
+        #   pulseaudio --system --disallow-exit --disallow-module-loading
         imagePullPolicy: Always
         ports:
-        - containerPort: 8989
-        env:
-        - name: PGID
-          value: "1000"
-        - name: PUID
-          value: "1000"
+        - containerPort: 5004
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: 5004
+        #   failureThreshold: 1
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 10
+        #   successThreshold: 1
+        #   timeoutSeconds: 2
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 5004
+        #   failureThreshold: 3
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 10
+        #   successThreshold: 1
+        #   timeoutSeconds: 2
         volumeMounts:
-        - name: pulseaudio
-          mountPath: /config
-          subPath: docker/pulseaudio
-        - name: pulseaudio
-          mountPath: /downloads
-          subPath: downloads/Series
-        - name: pulseaudio
-          mountPath: /tv
-          subPath: Series
+        - name: current-config
+          mountPath: /etc/pulse
       volumes:
-      - name: pulseaudio
-        glusterfs:
-          endpoints: glusterfs-cluster
-          path: data
-          readOnly: false
+      - name: current-config
+        configMap:
+          name: config.general.pulseaudio
