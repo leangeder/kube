@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pulseaudio
+  labels:
+    app: pulseaudio
+spec:
+  ports:
+  - name: http
+    port: 8989
+  selector:
+    app: pulseaudio

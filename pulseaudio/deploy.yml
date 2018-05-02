@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pulseaudio
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pulseaudio
+    spec:
+      containers:
+      - name: pulseaudio
+        image: linuxserver/pulseaudio
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8989
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: pulseaudio
+          mountPath: /config
+          subPath: docker/pulseaudio
+        - name: pulseaudio
+          mountPath: /downloads
+          subPath: downloads/Series
+        - name: pulseaudio
+          mountPath: /tv
+          subPath: Series
+      volumes:
+      - name: pulseaudio
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
