@@ -14,15 +14,21 @@ spec:
         image: regueiro/calibre-server:latest
         imagePullPolicy: Always
         args:
-        - "--log=/dev/stdout"
-        - "--url-prefix=/Books/"
+        - "--listen-on=0.0.0.0"
+        - "--enable-local-write"
+        - "--enable-log-not-found"
+        - "--url-prefix=/Books"
+        - "--log=/dev/stderr"
+        - "--access-log=/dev/stdout"
         ports:
         - name: calibre
           containerPort: 8080
         volumeMounts:
         - name: calibre
-          mountPath: /conf
-          subPath: Ebooks/conf
+          # mountPath: /conf
+          # subPath: Ebooks/conf
+          mountPath: /root/.config/calibre/
+          subPath: docker/calibre
         - name: calibre
           mountPath: /download
           subPath: downloads/Books
