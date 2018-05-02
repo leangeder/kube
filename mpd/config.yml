@@ -81,11 +81,11 @@ data:
     #
     # Plugin ######################################################################
     # 
-    # playlist_plugin {
-    #         name                      "soundcloud"
-    #         enabled                   "true"
-    #         apikey                    "996b80ae0f23615f5e3f2faa414c1eca"
-    # }
+    playlist_plugin {
+            name                      "soundcloud"
+            enabled                   "true"
+            apikey                    "996b80ae0f23615f5e3f2faa414c1eca"
+    }
     #
     ###############################################################################
     #
@@ -131,7 +131,8 @@ data:
     #    format                        "44100:16:2"
     # }
     #
-    # samplerate_converter             "Fastest Sinc Interpolator"
+    samplerate_converter             "Fastest Sinc Interpolator"
+    # samplerate_converter             "Best Sinc Interpolator"
     #
     ###############################################################################
     #

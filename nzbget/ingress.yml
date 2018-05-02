@@ -8,7 +8,7 @@ metadata:
     traefik.backend.loadbalancer.stickey: "true"
 spec:
   rules:
-  - host: book2.leangeder.eu
+  - host: nzb.leangeder.eu
     http:
       paths:
       - path: /

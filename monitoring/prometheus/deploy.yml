@@ -1,11 +1,8 @@
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus
   namespace: monitoring
-  labels:
-    app: prometheus
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -14,47 +11,60 @@ metadata:
   namespace: monitoring
   labels:
     app: prometheus
+    component: core
 spec:
   replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: prometheus
   template:
     metadata:
+      name: prometheus
       labels:
         app: prometheus
+        component: core
     spec:
       serviceAccountName: prometheus
       containers:
       - name: prometheus
-        image: "prom/prometheus"
-        imagePullPolicy: "Always"
+        # image: prom/prometheus:v1.7.0
+        image: prom/prometheus
         args:
-        - '--config.file=/etc/config/prometheus.yml'
-        - '--storage.tsdb.path=/data'
-        - '--web.console.libraries=/etc/prometheus/console_libraries'
-        - '--web.console.templates=/etc/prometheus/consoles'
-        - '--web.enable-lifecycle'
+          # - '-storage.local.retention=24h'
+          # - '-storage.local.series-file-shrink-ratio=0.3'
+          - '-storage.local.retention=360h'
+          - '-storage.local.memory-chunks=1048576'
+          - '-config.file=/etc/prometheus/prometheus.yaml'
+          - '-alertmanager.url=http://alertmanager:9093/alertmanager'
         ports:
-        - name: http
+        - name: webui
           containerPort: 9090
-        readinessProbe:
-          httpGet:
-            path: /-/ready
-            port: 9090
-          initialDelaySeconds: 30
-          timeoutSeconds: 30
-        livenessProbe:
-          httpGet:
-            path: /-/healthy
-            port: 9090
-          initialDelaySeconds: 30
-          timeoutSeconds: 30
+#         resources:
+#           requests:
+#             cpu: 100m
+#             memory: 100M
+#           limits:
+#             cpu: 500m
+#             memory: 2500M
         volumeMounts:
         - name: config-volume
-          mountPath: /etc/config
-        - name: storage-volume
-          mountPath: /data
+          mountPath: /etc/prometheus
+        - name: rules-volume
+          mountPath: /etc/prometheus-rules
+        - name: prometheus-data
+          mountPath: /prometheus
       volumes:
       - name: config-volume
         configMap:
-          name: config-prometheus
-      - name: storage-volume
-        emptyDir: {}
+          name: prometheus-core
+      - name: rules-volume
+        configMap:
+          name: prometheus-rules
+      - name: prometheus-data
+        persistentVolumeClaim:
+          claimName: prometheus-data

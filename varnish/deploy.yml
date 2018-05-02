@@ -26,7 +26,6 @@ spec:
           value: "500m"
         - name: VARNISHD_PARAMS
           value: "-p default_ttl=3600 -p default_grace=3600"
-          # value: "-p default_ttl=3600 -p default_grace=3600"
         volumeMounts:
         - name: current-config
           mountPath: /etc/varnish/default.vcl

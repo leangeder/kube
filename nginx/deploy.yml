@@ -41,12 +41,12 @@ spec:
         - name: nginx
           mountPath: /usr/share/nginx/html/Series
           subPath: Series
-        - name: nginx
-          mountPath: /usr/share/nginx/html/Ebooks
-          subPath: Ebooks
-        - name: nginx
-          mountPath: /usr/share/nginx/html/Others
-          subPath: Others
+        # - name: nginx
+        #   mountPath: /usr/share/nginx/html/Ebooks
+        #   subPath: Ebooks
+        # - name: nginx
+        #   mountPath: /usr/share/nginx/html/Others
+        #   subPath: Others
       volumes:
       - name: nginx
         glusterfs:
