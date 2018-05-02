@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hydra
+  labels:
+    app: hydra
+spec:
+  ports:
+  - name: http
+    port: 5075
+  selector:
+    app: hydra

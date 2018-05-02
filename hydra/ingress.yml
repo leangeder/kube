@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hydra
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: hydra.leangeder.eu
+    http:
+      paths:
+      - backend:
+          serviceName: hydra
+          servicePort: http

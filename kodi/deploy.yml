@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kodi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kodi
+    spec:
+      containers:
+      - name: kodi
+        image: linuxserver/kodi-headless
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: server
+          containerPort: 9777
+          protocol: UDP
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: kodi
+          mountPath: /config/.kodi
+          subPath: docker/kodi
+        - name: kodi
+          mountPath: /series
+          subPath: Series
+        - name: kodi
+          mountPath: /movies
+          subPath: Movies
+        - name: kodi
+          mountPath: /musics
+          subPath: Music
+      volumes:
+      - name: kodi
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

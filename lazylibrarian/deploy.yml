@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lazylibrarian
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lazylibrarian
+    spec:
+      containers:
+      - name: lazylibrarian
+        image: linuxserver/lazylibrarian
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5299
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: lazylibrarian
+          mountPath: /config
+          subPath: docker/lazylibrarian
+        - name: lazylibrarian
+          mountPath: /downloads
+          subPath: downloads/Books
+        - name: lazylibrarian
+          mountPath: /books
+          subPath: Ebooks/add
+      volumes:
+      - name: lazylibrarian
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
