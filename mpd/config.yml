@@ -7,25 +7,25 @@ data:
   mpd.conf: |
     # Files and directories #######################################################
     #
-    music_directory                   "~/Music/"
+    music_directory                   "/var/lib/mpd/Music/"
     #
     # playlist_directory                "~/.config/mpd/playlists"
-    playlist_directory                "~/playlists"
+    playlist_directory                "/var/lib/mpd/playlists"
     #
     # db_file                           "~/.config/mpd/database"
-    db_file                           "~/database"
+    db_file                           "/var/lib/mpd/database"
     #
     # log_file                          "~/.config/mpd/log"
-    log_file                          "~/log"
+    log_file                          "/var/lib/mpd/log"
     #
     # pid_file                          "~/.config/mpd/pid"
-    pid_file                          "~/pid"
+    pid_file                          "/var/lib/mpd/pid"
     #
     # state_file                        "~/.config/mpd/state"
-    state_file                        "~/state"
+    state_file                        "/var/lib/mpd/state"
     #
     # sticker_file                      "~/.config/mpd/sticker.sql"
-    sticker_file                      "~/sticker.sql"
+    sticker_file                      "/var/lib/mpd/sticker.sql"
     #
     ###############################################################################
     #
@@ -115,6 +115,12 @@ data:
             max_clients               "0"           # optional 0=no limit
             always_on                 "yes"
             tags                      "yes"
+    }
+    audio_output {
+            type                      "pulse"
+            name                      "PulseAudio server Stream"
+            server                    "pulseaudio"
+            sink                      "rtp"
     }
     #
     # audio_output {

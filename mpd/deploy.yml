@@ -11,14 +11,20 @@ spec:
     spec:
       containers:
       - name: mpd
+        image: jess/mpd
         # image: vimagick/mpd
-        image: alpine
+        # image: alpine
+        # command:
+        # - "/bin/sh"
+        # - "-xc"
+        # - >
+        #   apk -U add mpd;
+        #   mpd --stdout --no-daemon --verbose;
         command:
         - "/bin/sh"
         - "-xc"
         - >
-          apk -U add mpd;
-          mpd --stdout --no-daemon --verbose;
+          mpd --no-daemon --stdout --verbose;
         ports:
         - name: db
           containerPort: 6600
