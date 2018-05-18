@@ -10,7 +10,7 @@ spec:
         app: calibre
     spec:
       containers:
-      - name: calibre
+      - name: server
         image: regueiro/calibre-server:latest
         imagePullPolicy: Always
         args:
@@ -25,16 +25,23 @@ spec:
           containerPort: 8080
         volumeMounts:
         - name: calibre
-          # mountPath: /conf
-          # subPath: Ebooks/conf
           mountPath: /root/.config/calibre/
           subPath: docker/calibre
         - name: calibre
-          mountPath: /download
-          subPath: downloads/Books
-        - name: calibre
           mountPath: /opt/calibre/library
           subPath: Ebooks/Library
+      # - name: auto-add
+      #   image: regueiro/calibre-server:latest
+      #   imagePullPolicy: Always
+      #   command:
+      #   - "/bin/bash"
+      #   - "-c"
+      #   - >
+      #     calibredb add /download/ -r --with-library=http://calibre:8080/Books/
+      #   volumeMounts:
+      #   - name: calibre
+      #     mountPath: /download
+      #     subPath: downloads/Books
       volumes:
       - name: calibre
         glusterfs:
