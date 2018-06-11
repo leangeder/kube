@@ -17,13 +17,13 @@ data:
     ; lock-memory = no
     ; cpu-limit = no
 
-    ; high-priority = yes
+    high-priority = yes
     ; nice-level = -11
 
     ; realtime-scheduling = yes
     ; realtime-priority = 5
 
-    exit-idle-time = 180
+    exit-idle-time = -1
     ; scache-idle-time = 20
 
     ; dl-search-path = (depends on architecture)
@@ -66,8 +66,8 @@ data:
     ; default-sample-channels = 2
     ; default-channel-map = front-left,front-right
 
-    ; default-fragments = 4
-    ; default-fragment-size-msec = 25
+    default-fragments = 16
+    default-fragment-size-msec = 100
 
     ; enable-deferred-volume = yes
     deferred-volume-safety-margin-usec = 1
@@ -75,18 +75,20 @@ data:
   default.pa: |
     #!/usr/bin/pulseaudio -nF
     .fail
-        # Set tsched=0 here if you experience glitchy playback. This will
-        # revert back to interrupt-based scheduling and should fix it.
-        #
-        # Replace the device= part if you want pulse to use a specific device
-        # such as "dmix" and "dsnoop" so it doesn't lock an hw: device.
-        
+        # INPUT/RECORD
+        # load-module module-null-source
+
+        # OUTPUT/PLAYBACK
         load-module module-null-sink sink_name=rtp format=s16be channels=2 rate=44100 sink_properties="device.description='RTP Multicast Sink'"
-        load-module module-rtp-send source=rtp.monitor port=5004 loop=1
+
+
+        # load-module module-rtp-send source=rtp.monitor port=5004 loop=1
 
         # Accept clients -- very important
-        load-module module-native-protocol-unix
-        load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/24 auth-anonymous=1
+        load-module module-native-protocol-tcp listen=0.0.0.0 auth-anonymous=1
+        # load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;10.244.0.0/16;0.0.0.0 auth-anonymous=1
+        # # load-module module-native-protocol-tcp auth-ip-acl=10.244.0.0/16
+        # # # load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/24 auth-anonymous=1
     
     .nofail
     .ifexists module-x11-publish.so

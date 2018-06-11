@@ -22,7 +22,22 @@ spec:
         #   pulseaudio --system --disallow-exit --disallow-module-loading
         imagePullPolicy: Always
         ports:
-        - containerPort: 5004
+        - name: test
+          containerPort: 4317
+        - name: simple
+          containerPort: 4711
+        - name: cli
+          containerPort: 4712
+        - name: native
+          containerPort: 4713
+        - name: http
+          containerPort: 4714
+        - name: rtp-tcp
+          protocol: TCP
+          containerPort: 5004
+        - name: rtp-udp
+          protocol: UDP
+          containerPort: 5004
         # readinessProbe:
         #   tcpSocket:
         #     port: 5004

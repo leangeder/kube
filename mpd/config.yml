@@ -119,6 +119,7 @@ data:
     audio_output {
             type                      "pulse"
             name                      "PulseAudio server Stream"
+            # server                    "10.244.1.192"
             server                    "pulseaudio"
             sink                      "rtp"
     }

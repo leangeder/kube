@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lidarr
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lidarr
+    spec:
+      containers:
+      - name: lidarr
+        image: linuxserver/lidarr
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8686
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: lidarr
+          mountPath: /config
+          subPath: docker/lidarr
+        - name: lidarr
+          mountPath: /downloads
+          subPath: downloads/Music
+        - name: lidarr
+          mountPath: /music
+          subPath: Music
+      volumes:
+      - name: lidarr
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -5,10 +6,64 @@ metadata:
   labels:
     app: pulseaudio
 spec:
+  clusterIP: None
   ports:
-  - name: rtp
+  - name: test
+    port: 4317
+  - name: simple
+    port: 4711
+  - name: cli
+    port: 4712
+  - name: native
+    port: 4713
+  - name: http
+    port: 4714
+  selector:
+    app: pulseaudio
+  # externalIPs:
+  # - 62.210.14.17
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pulseaudio-tmp
+  labels:
+    app: pulseaudio
+spec:
+  # clusterIP: None
+  ports:
+  - name: test
+    port: 4317
+  - name: simple
+    port: 4711
+  - name: cli
+    port: 4712
+  - name: native
+    port: 4713
+  - name: http
+    port: 4714
+  - name: rtp-tcp
+    protocol: TCP
+    port: 5004
+  - name: rtp-udp
+    protocol: UDP
     port: 5004
   selector:
     app: pulseaudio
   externalIPs:
   - 62.210.14.17
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: stream
+#   labels:
+#     app: pulseaudio
+# spec:
+#   ports:
+#   - name: rtp
+#     port: 5004
+#   selector:
+#     app: pulseaudio
+#   externalIPs:
+#   - 62.210.14.17

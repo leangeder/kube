@@ -1,0 +1,111 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rocketchat
+  labels:
+    app: rocketchat
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rocketchat
+    spec:
+      containers:
+      - name: mongodb
+        image: "mongo"
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - mongo
+            - --eval
+            - "db.adminCommand('ping')"
+        readinessProbe:
+          exec:
+            command:
+            - mongo
+            - --eval
+            - "db.adminCommand('ping')"
+        ports:
+        - name: mongodb
+          containerPort: 27017
+        # resources:
+        #   requests:
+        #     memory: 256Mi
+        #     cpu: 100M
+        volumeMounts:
+        - name: rocketchat
+          mountPath: /bitnami/mongodb
+          subPath: docker/mongodb
+      - name: rocketchat
+        image: "rocket.chat"
+        imagePullPolicy: IfNotPresent
+        env:
+        # - name: DEPLOY_PLATFORM
+        #   value: docker # helm-chart
+        - name: INSTANCE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: MONGO_URL
+          value: "mongodb://127.0.0.1:27017/rockerchat"
+        - name: ROOT_URL
+          value: "http://chat.leangeder.eu"
+        - name: MAIL_URL
+          valueFrom:
+            secretKeyRef:
+              name: rocketchat-config
+              key: mail-url
+        - name: SMTP_Host
+          value: ""
+        - name: SMTP_Port
+          value: ""
+        - name: SMTP_Username
+          value: ""
+        - name: SMTP_Password
+          value: ""
+        - name: From_Email
+          value: ""
+        - name: Jitsi_Enabled
+          value: "false"
+        - name: Jitsi_Domain
+          value: "meet.jit.si"
+        - name: Jitsi_URL_Room_Prefix
+          value: "Rocketchat"
+        - name: Jitsi_Open_New_Window
+          value: "false"
+        - name: Jitsi_Enable_Channels
+          value: "false"
+        - name: Jitsi_Chrome_Extension
+          value: ""
+        - name: WebRTC_Enable_Channel
+          value: "false"
+        - name: WebRTC_Enable_Private
+          value: "false"
+        - name: WebRTC_Enable_Direct
+          value: "false"
+        ports:
+        - name: http
+          containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+        # resources:
+        #   requests:
+        #     memory: 512Mi
+        #     cpu: 300m
+        volumeMounts:
+        - name: rocketchat
+          mountPath: /config
+          subPath: docker/rocketchat
+      volumes:
+      - name: rocketchat
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

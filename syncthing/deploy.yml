@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: syncthing
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: syncthing
+    spec:
+      containers:
+      - name: syncthing
+        image: syncthing/syncthing
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8989
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: syncthing
+          mountPath: /config
+          subPath: docker/syncthing
+        - name: syncthing
+          mountPath: /downloads
+          subPath: downloads/Series
+        - name: syncthing
+          mountPath: /tv
+          subPath: Series
+      volumes:
+      - name: syncthing
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
