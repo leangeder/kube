@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: drone
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: drone.leangeder.eu
+    http:
+      paths:
+      - backend:
+          serviceName: drone-service
+          servicePort: http
