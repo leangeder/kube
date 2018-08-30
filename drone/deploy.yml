@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: drone-server
-  # namespace: drone
+  namespace: drone
 spec:
   replicas: 1
   template:
@@ -11,19 +11,34 @@ spec:
       labels:
         app: drone-server
     spec:
+      serviceAccountName: drone
       containers:
       - name: drone-server
-        image: drone/drone:latest
-        imagePullPolicy: Always
+        image: docker.io/drone/drone:0.8.5
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8000
+        - name: http
+          containerPort: 8000
           protocol: TCP
-        - containerPort: 9000
+        - name: grpc
+          containerPort: 9000
           protocol: TCP
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
         resources:
           requests:
             cpu: 40m
             memory: 32Mi
+          limits:
+            cpu: 1
+            memory: 2Gi
         env:
         - name: DRONE_HOST
           valueFrom:
@@ -46,15 +61,23 @@ spec:
               name: drone-config
               key: server.database.datasource
         - name: DRONE_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: drone-secrets
-              key: server.secret
+          value: "drone-sync-secret"
+          # valueFrom:
+          #   secretKeyRef:
+          #     name: drone-secrets
+          #     key: server.secret
         - name: DRONE_ADMIN
           valueFrom:
             configMapKeyRef:
               name: drone-config
               key: server.admin
+        - name: DRONE_ORGS
+          valueFrom:
+            configMapKeyRef:
+              name: drone-config
+              key: server.remote.organization
+        - name: DRONE_PROVIDER
+          value: "github"
         - name: DRONE_GITHUB
           valueFrom:
             configMapKeyRef:
@@ -78,24 +101,16 @@ spec:
         volumeMounts:
         - name: drone
           mountPath: /var/lib/drone
-          subPath: docker/drone
-        - name: docker-socket
-          mountPath: /var/run/docker.sock
       volumes:
-      - name: docker-socket
-        hostPath:
-          path: /var/run/docker.sock
       - name: drone
-        glusterfs:
-          endpoints: glusterfs-cluster
-          path: data
-          readOnly: false
+        persistentVolumeClaim:
+          claimName: pvc-drone
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: drone-agent
-  # namespace: drone
+  namespace: drone
 spec:
   replicas: 1
   template:
@@ -103,61 +118,34 @@ spec:
       labels:
         app: drone-agent
     spec:
+      serviceAccountName: drone
       containers:
       - name: drone-agent
-        image: drone/agent:latest
-        imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 3000
-          initialDelaySeconds: 3
-          periodSeconds: 3
+        image: docker.io/drone/agent:0.8.5
+        imagePullPolicy: IfNotPresent
         env:
         - name: DRONE_SERVER
-          value: drone-service:9000
-        # issue: https://github.com/drone/drone/issues/2048
-        - name: DOCKER_API_VERSION
-          value: "1.24"
+          value: "drone:9000"
         - name: DRONE_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: drone-secrets
-              key: server.secret
-        - name: DRONE_MAX_PROCS
-          valueFrom:
-            configMapKeyRef:
-              name: drone-config
-              key: agent.max.procs
+          value: "drone-sync-secret"
+          # valueFrom:
+          #   secretKeyRef:
+          #     name: drone-secrets
+          #     key: server.secret
         - name: DRONE_DEBUG
           valueFrom:
             configMapKeyRef:
               name: drone-config
               key: agent.debug
-        - name: DRONE_DEBUG_PRETTY
-          valueFrom:
-            configMapKeyRef:
-              name: drone-config
-              key: agent.debug.pretty
-        - name: DRONE_HEALTHCHECK
-          valueFrom:
-            configMapKeyRef:
-              name: drone-config
-              key: agent.healthcheck
-        - name: DRONE_KEEPALIVE_TIME
-          valueFrom:
-            configMapKeyRef:
-              name: drone-config
-              key: agent.keepalive.time
-        - name: DRONE_KEEPALIVE_TIMEOUT
-          valueFrom:
-            configMapKeyRef:
-              name: drone-config
-              key: agent.keepalive.timeout
+        resources:
+          requests:
+            cpu: 40m
+            memory: 32Mi
+          limits:
+            cpu: 1
+            memory: 2Gi
+        securityContext:
+          privileged: true
         volumeMounts:
         - name: docker-socket
           mountPath: /var/run/docker.sock
@@ -165,3 +153,4 @@ spec:
       - name: docker-socket
         hostPath:
           path: /var/run/docker.sock
+          type: ""

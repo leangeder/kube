@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: drone
+    chart: drone-1.4.0
+    component: server
+    heritage: Tiller
+    release: drone
+  name: drone-drone-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: drone
+        component: server
+        release: drone
+    spec:
+      containers:
+      - name: drone-drone-server
+        image: docker.io/drone/drone:0.8.5
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DRONE_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: secret
+              name: drone-drone
+        - name: DRONE_HOST
+          value: http://drone-drone
+        - name: DRONE_ADMIN
+          value: admin-1,admin-2
+        - name: DRONE_DATABASE_DATASOURCE
+          value: /var/lib/drone/drone.sqlite
+        - name: DRONE_DATABASE_DRIVER
+          value: sqlite3
+        - name: DRONE_DEBUG
+          value: "false"
+        - name: DRONE_GITHUB
+          value: "true"
+        - name: DRONE_GITHUB_CLIENT
+          value: github-oauth2-client-id
+        - name: DRONE_ORGS
+          value: SeedJob
+        - name: DRONE_PROVIDER
+          value: github
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        - containerPort: 9000
+          name: grpc
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 40m
+            memory: 32Mi
+        volumeMounts:
+        - mountPath: /var/lib/drone
+          name: data
+      serviceAccount: drone-drone
+      serviceAccountName: drone-drone
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: drone-drone

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: drone-config
-  # namespace: drone
+  namespace: drone
 data:
 
   #######################
@@ -11,7 +11,7 @@ data:
   #######################
 
   # server host name
-  server.host: http://drone.leangeder.eu
+  server.host: http://drone.beamery.com
   # start the server in debug mode
   server.debug: "true"
   # open user registration
@@ -21,12 +21,13 @@ data:
   # database driver configuration string
   server.database.datasource: drone.sqlite
   # list of admin users
-  server.admin: leangeder
+  server.admin: "erleene,leangeder,MovieStoreGuy,AlexsJones,LGUG2Z"
 
   # remote parameters (GitHub)
   server.remote.github: "true"
-  server.remote.github.client: d71a2a87e389ea23a439
-  server.remote.github.secret: d5a609d558794ddd4c1fb9a713f797bb57969056
+  server.remote.github.client: 6f3815b3ad9247d90b6f
+  server.remote.github.secret: 0979f1d96d6fa79f8316cb1a1e6030378b52a90c
+  server.remote.organization: "SeedJobs"
 
   ######################
   # Drone Agent Config #
@@ -38,11 +39,12 @@ data:
   agent.healthcheck: "true"
   agent.keepalive.time: "1s"
   agent.keepalive.timeout: "5s"
+
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: drone-secrets
-  # namespace: drone
+  namespace: drone
 data:
   server.secret: c2Rmc2Zka2pxcmFvaWZxc2xzZGZyaW5yYWVyb3h3aWZ2eGZucXNkZgo=
