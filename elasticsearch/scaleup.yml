@@ -10,8 +10,10 @@ spec:
     apiVersion: apps/v1beta1
     kind: Deployment
     name: elasticsearch-master
-  minReplicas: 3
-  maxReplicas: 4
+  minReplicas: 1
+  maxReplicas: 1
+  # minReplicas: 3
+  # maxReplicas: 4
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -24,5 +26,7 @@ spec:
     apiVersion: apps/v1beta1
     kind: Deployment
     name: elasticsearch-client
-  minReplicas: 4
-  maxReplicas: 4
+  minReplicas: 1
+  maxReplicas: 1
+  # minReplicas: 4
+  # maxReplicas: 4
