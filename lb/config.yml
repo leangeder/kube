@@ -8,20 +8,23 @@ data:
   traefik.toml: |
     # traefik.toml
     logLevel = "DEBUG"
-    # defaultEntryPoints = ["http","https"]
-    defaultEntryPoints = ["http"]
+    defaultEntryPoints = ["http","https"]
     [entryPoints]
       [entryPoints.http]
       address = ":80"
-      # [entryPoints.http.redirect]
-      # entryPoint = "https"
-      # # [entryPoints.https.auth.basic]
-      # # users = ["leangeder:$apr1$k2qslCn6$0OgA8vhnyC8nJ99YfJMOM/"]
-      # [entryPoints.https]
-      # address = ":443"
-      # [entryPoints.https.tls]
+      [entryPoints.http.redirect]
+      entryPoint = "https"
+      # [entryPoints.https.auth.basic]
+      # users = ["leangeder:$apr1$k2qslCn6$0OgA8vhnyC8nJ99YfJMOM/"]
+      [entryPoints.https]
+      address = ":443"
+      [entryPoints.https.tls]
 
     [kubernetes]
+
+    [api]
+      [api.statistics]
+        recentErrors = 10
 
     [web]
       [web.statistics]
@@ -30,11 +33,15 @@ data:
     [web.metrics.prometheus]
       Buckets = [0.1,0.3,1.2,5.0]
 
-    # [acme]
-    # email = "40153@supinfo.com"
-    # storage = "/acme/acme.json"
-    # entryPoint = "https"
-    # onDemand = true
-    # onHostRule = true
-    # [[acme.domains]]
-    # main = "leangeder.eu"
+    [acme]
+    email = "40153@supinfo.com"
+    storage = "/acme/acme.json"
+    acmeLogging = true
+    entryPoint = "https"
+    onHostRule = true
+      [[acme.domains]]
+        main = "*.leangeder.eu"
+        sans = ["leangeder.com", "movie.leangeder.com", "serie.leangeer.eu"]
+
+    [acme.httpChallenge]
+      entryPoint="http"

@@ -4,80 +4,15 @@ kind: ServiceAccount
 metadata:
   name: traefik-ingress-controller
   namespace: kube-system
-# ---
-# kind: DaemonSet
-# apiVersion: extensions/v1beta1
-# metadata:
-#   name: traefik-ingress-controller
-#   namespace: kube-system
-#   labels:
-#     k8s-app: traefik-ingress-lb
-# spec:
-#   revisionHistoryLimit: 0
-#   template:
-#     metadata:
-#       labels:
-#         k8s-app: traefik-ingress-lb
-#         name: traefik-ingress-lb
-#     spec:
-#       serviceAccountName: traefik-ingress-controller
-#       terminationGracePeriodSeconds: 60
-#       hostNetwork: true
-#       containers:
-#       - name: traefik-ingress-lb
-#         image: traefik
-#         volumeMounts:
-#         - mountPath: "/config"
-#           name: "config"
-#         - mountPath: "/acme"
-#           name: "acme"
-#         readinessProbe:
-#           tcpSocket:
-#             port: 80
-#           failureThreshold: 1
-#           initialDelaySeconds: 10
-#           periodSeconds: 10
-#           successThreshold: 1
-#           timeoutSeconds: 2
-#         livenessProbe:
-#           tcpSocket:
-#             port: 80
-#           failureThreshold: 3
-#           initialDelaySeconds: 10
-#           periodSeconds: 10
-#           successThreshold: 1
-#           timeoutSeconds: 2
-#         ports:
-#         - name: http
-#           containerPort: 80
-#           hostPort: 80
-#         - name: https
-#           containerPort: 443
-#           hostPort: 443
-#         - name: admin
-#           containerPort: 8080
-#         securityContext:
-#           privileged: true
-#         args:
-#           - --configfile=/config/traefik.toml
-#       volumes:
-#         - name: config
-#           configMap:
-#             name: traefik-conf
-#         - name: acme
-#           hostPath:
-#            path: /opt/docker/traefik
-#            # type: Directory
 ---
+kind: DaemonSet
 apiVersion: extensions/v1beta1
-kind: Deployment
 metadata:
   name: traefik-ingress-controller
   namespace: kube-system
   labels:
     k8s-app: traefik-ingress-lb
 spec:
-  replicas: 1
   revisionHistoryLimit: 0
   template:
     metadata:
@@ -85,66 +20,54 @@ spec:
         k8s-app: traefik-ingress-lb
         name: traefik-ingress-lb
     spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: k8s-app
-                operator: In
-                values:
-                - traefik-ingress-lb
-              - key: name
-                operator: In
-                values:
-                - traefik-ingress-lb
-            topologyKey: kubernetes.io/hostname
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
-      # hostNetwork: true
+      hostNetwork: true
       containers:
-        - name: traefik-ingress-lb
-          image: "traefik"
-          imagePullPolicy: Always
-          # securityContext:
-          #   privileged: true
-          volumeMounts:
-            - mountPath: "/config"
-              name: "config"
-            - mountPath: "/acme"
-              name: "acme"
-          readinessProbe:
-            tcpSocket:
-              port: 80
-            failureThreshold: 1
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 2
-          livenessProbe:
-            tcpSocket:
-              port: 80
-            failureThreshold: 3
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 2
-          ports:
-          - name: http
-            containerPort: 80
-          #   hostPort: 80
-          - name: https
-            containerPort: 443
-          #   hostPort: 443
-          - name: admin
-            containerPort: 8080
-          args:
-            - --configfile=/config/traefik.toml
+      - name: traefik-ingress-lb
+        image: traefik
+        volumeMounts:
+        - name: "config"
+          mountPath: "/config"
+        - name: "acme"
+          mountPath: "/acme"
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        ports:
+        - name: http
+          containerPort: 80
+          # hostPort: 80
+        - name: https
+          containerPort: 443
+          # hostPort: 443
+        - name: admin
+          containerPort: 8080
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        args:
+        - --configfile=/config/traefik.toml
       volumes:
-        - name: config
-          configMap:
-            name: traefik-conf
-        - name: acme
-          hostPath:
-           path: /opt/docker/traefik
-           # type: Directory
+      - name: config
+        configMap:
+          name: traefik-conf
+      - name: acme
+        hostPath:
+         path: /opt/docker/traefik
