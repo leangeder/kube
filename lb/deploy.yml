@@ -22,7 +22,7 @@ spec:
     spec:
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
-      hostNetwork: true
+      # hostNetwork: true
       containers:
       - name: traefik-ingress-lb
         image: traefik
@@ -56,12 +56,12 @@ spec:
           # hostPort: 443
         - name: admin
           containerPort: 8080
-        securityContext:
-          capabilities:
-            drop:
-            - ALL
-            add:
-            - NET_BIND_SERVICE
+        # securityContext:
+        # capabilities:
+        #   drop:
+        #   - ALL
+        #   add:
+        #   - NET_BIND_SERVICE
         args:
         - --configfile=/config/traefik.toml
       volumes:

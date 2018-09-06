@@ -36,12 +36,14 @@ data:
     [acme]
     email = "40153@supinfo.com"
     storage = "/acme/acme.json"
-    acmeLogging = true
     entryPoint = "https"
-    onHostRule = true
+    acmeLogging = true
+    onDemand = true
+    # onHostRule = true
       [[acme.domains]]
         main = "*.leangeder.eu"
-        sans = ["leangeder.com", "movie.leangeder.com", "serie.leangeer.eu"]
+        sans = ["leangeder.com"]
+        # sans = ["leangeder.com", "movie.leangeder.com", "serie.leangeder.eu", "file"]
 
     [acme.httpChallenge]
       entryPoint="http"
