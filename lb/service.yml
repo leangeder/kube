@@ -7,14 +7,14 @@ metadata:
   labels:
     k8s-app: traefik-ingress-lb
 spec:
-  # type: LoadBalancer
+  type: LoadBalancer
   ports:
   - name: http
     port: 80
   - name: https
     port: 443
-#   externalIPs:
-#   - 62.210.14.17
+  externalIPs:
+  - 62.210.14.17
   selector:
     k8s-app: traefik-ingress-lb
 ---
