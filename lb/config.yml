@@ -12,10 +12,10 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
-      [entryPoints.http.redirect]
-      entryPoint = "https"
-      # [entryPoints.https.auth.basic]
-      # users = ["leangeder:$apr1$k2qslCn6$0OgA8vhnyC8nJ99YfJMOM/"]
+      # [entryPoints.http.redirect]
+      # entryPoint = "https"
+      # # [entryPoints.https.auth.basic]
+      # # users = ["leangeder:$apr1$k2qslCn6$0OgA8vhnyC8nJ99YfJMOM/"]
       [entryPoints.https]
       address = ":443"
       [entryPoints.https.tls]
