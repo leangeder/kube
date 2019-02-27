@@ -31,6 +31,10 @@ spec:
         ports:
         - name: mongodb
           containerPort: 27017
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100M
         # resources:
         #   requests:
         #     memory: 256Mi
@@ -40,9 +44,11 @@ spec:
           mountPath: /bitnami/mongodb
           subPath: docker/mongodb
       - name: rocketchat
-        image: "rocket.chat"
+        image: "rocketchat/rocket.chat:latest"
         imagePullPolicy: IfNotPresent
         env:
+        - name: DEPLOY_PLATFORM
+          value: docker # helm-chart
         # - name: DEPLOY_PLATFORM
         #   value: docker # helm-chart
         - name: INSTANCE_IP
@@ -95,6 +101,10 @@ spec:
             port: http
           initialDelaySeconds: 60
           timeoutSeconds: 5
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 300m
         # resources:
         #   requests:
         #     memory: 512Mi

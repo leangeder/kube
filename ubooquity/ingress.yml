@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: book
+  name: ubooquity
   annotations:
     kubernetes.io/ingress.class: "traefik"
     # traefik.frontend.passHostHeader: "true"
@@ -9,14 +9,14 @@ metadata:
     # ingress.kubernetes.io/rewrite-target: "/ubooquity"
 spec:
   rules:
-  - host: book.leangeder.eu
+  - host: file.leangeder.eu
     http:
       paths:
-      - path: /
+      - path: /Books/admin
         backend:
-          serviceName: book
-          servicePort: http
-      - path: /ubooquity/admin
-        backend:
-          serviceName: book
+          serviceName: ubooquity
           servicePort: admin
+      - path: /Books
+        backend:
+          serviceName: ubooquity
+          servicePort: http

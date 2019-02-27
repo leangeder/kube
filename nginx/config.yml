@@ -13,24 +13,17 @@ data:
       root /usr/share/nginx/html;
       index index.html index.htm index.nginx-debian.html;
 
+      # # location / {
+      # #   try_files $uri $uri/ =404;
+      # # }
+
       # location / {
-      #   try_files $uri $uri/ =404;
+      #     root   /usr/share/nginx/html;
+      #     # index  index.html index.htm;
+      #     autoindex on;
       # }
-
       location / {
-          root   /usr/share/nginx/html;
-          # index  index.html index.htm;
-          autoindex on;
-      }
-
-      error_page   500 502 503 504  /50x.html;
-      location = /50x.html {
-          root   /usr/share/nginx/html;
-      }
-      
-      #this is an example of a password restricted repository
-      location ^~ /Music/ {
-        root   /usr/share/nginx/html;
+        try_files $uri $uri/ /index.html;
         client_body_temp_path /temp;
         dav_methods     PUT DELETE MKCOL COPY MOVE;
         dav_ext_methods   PROPFIND OPTIONS;
@@ -40,6 +33,72 @@ data:
         auth_basic "restricted";
         auth_basic_user_file /etc/nginx/htpasswd;
       }
+
+      # error_page   500 502 503 504  /50x.html;
+      # location = /50x.html {
+      #     root   /usr/share/nginx/html;
+      # }
+      # 
+      # #this is an example of a password restricted repository
+      # location ^~ /Music/ {
+      #   root   /usr/share/nginx/html;
+      #   client_body_temp_path /temp;
+      #   dav_methods     PUT DELETE MKCOL COPY MOVE;
+      #   dav_ext_methods   PROPFIND OPTIONS;
+      #   create_full_put_path  on;
+      #   dav_access    user:rw group:rw all:rw;
+      #   autoindex     on;
+      #   auth_basic "restricted";
+      #   auth_basic_user_file /etc/nginx/htpasswd;
+      # }
+
+      # location ^~ /Movies/ {
+      #   root   /usr/share/nginx/html;
+      #   client_body_temp_path /temp;
+      #   dav_methods     PUT DELETE MKCOL COPY MOVE;
+      #   dav_ext_methods   PROPFIND OPTIONS;
+      #   create_full_put_path  on;
+      #   dav_access    user:rw group:rw all:rw;
+      #   autoindex     on;
+      #   auth_basic "restricted";
+      #   auth_basic_user_file /etc/nginx/htpasswd;
+      # }
+
+      # location ^~ /Series/ {
+      #   root   /usr/share/nginx/html;
+      #   client_body_temp_path /temp;
+      #   dav_methods     PUT DELETE MKCOL COPY MOVE;
+      #   dav_ext_methods   PROPFIND OPTIONS;
+      #   create_full_put_path  on;
+      #   dav_access    user:rw group:rw all:rw;
+      #   autoindex     on;
+      #   auth_basic "restricted";
+      #   auth_basic_user_file /etc/nginx/htpasswd;
+      # }
+
+      # location ^~ /Ebooks/ {
+      #   root   /usr/share/nginx/html;
+      #   client_body_temp_path /temp;
+      #   dav_methods     PUT DELETE MKCOL COPY MOVE;
+      #   dav_ext_methods   PROPFIND OPTIONS;
+      #   create_full_put_path  on;
+      #   dav_access    user:rw group:rw all:rw;
+      #   autoindex     on;
+      #   auth_basic "restricted";
+      #   auth_basic_user_file /etc/nginx/htpasswd;
+      # }
+
+      # location ^~ /Others/ {
+      #   root   /usr/share/nginx/html;
+      #   client_body_temp_path /temp;
+      #   dav_methods     PUT DELETE MKCOL COPY MOVE;
+      #   dav_ext_methods   PROPFIND OPTIONS;
+      #   create_full_put_path  on;
+      #   dav_access    user:rw group:rw all:rw;
+      #   autoindex     on;
+      #   auth_basic "restricted";
+      #   auth_basic_user_file /etc/nginx/htpasswd;
+      # }
     }
 ---
 apiVersion: v1

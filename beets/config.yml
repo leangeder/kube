@@ -5,3 +5,37 @@ metadata:
   name: config.general.beets
 data:
   beets.conf: |
+    # ~/.config/beets/config.yaml
+    # python -W ignore ./beet import /media/mazenovi/MazeWallet/Swap -l /media/mazenovi/MazeWallet/beets/$(date +"%m-%d-%Y-%H-%M-%S").log
+    
+    directory: ~/Music/Music # le dossier où sera stockée la musique triée par beet
+    
+    library: ~/.config/beets/musique.blb # la base de donnéees qui stocke toutes les métadonnées des fichiers
+    
+    import:
+        move: yes # beets déplace les albums triés (de là où ils sont aux dossiers mentionnés plus haut)
+    
+    replace: # ici tous les motifs trouvables dans les métadonnées à transformer pour qu'ils soient compatibles avec un nom de fichier ou de dossier
+        '[\\/]': _
+    #   '^\.': _ j'aim bien voir Abraham Inc. (et pas Abraham Inc_ !!)
+    #    '[\x00-\x1f]': _
+        '[<>:"\?\*\|]': _
+        '\.$': _
+        '\s+$': ''
+        '^\s+': ''
+    
+    plugins: embedart the lastgenre duplicates missing info discogs # activation de quelques plugins natifs
+    
+    paths:
+      default: '$genre/Albums/%bucket{%upper{%left{%the{%asciify{$albumartist}},1}}}/%the{%asciify{$albumartist}}/[%if{$year,$year,0000}] %asciify{$album} %aunique{albumartist album year, albumtype label catalognum albumdisambig}/%if{$multidisc,$disc-}$track - %asciify{$title}'
+      singleton: '$genre/Singles/%%the{%asciify{$artist}} - %asciify{$title}'
+      comp: '$genre/Compilations/[%if{$year,$year,0000}] %the{%asciify{$album}%if{%aunique, %aunique{albumartist album year, albumtype label catalognum albumdisambig}}}/%if{$multidisc,$disc-}$track - %asciify{$title}'
+      albumtype:soundtrack: '$genre/Soundtracks/[%if{$year,$year,0000}] %the{%asciify{$album}%if{%aunique, %aunique{albumartist album year, albumtype label catalognum albumdisambig}}}/%if{$multidisc,$disk-}$track - %asciify{$title}'
+ 
+    the:
+        patterns: ['^les ', '^le ', '^la ', '^un '] # les mots à virer. Ne pas oublier l'espace ou "Lady Saw" devient "Dy Saw, La" et on ne la reconnait plus
+    
+    lastgenre:
+        count: 5 #nombre de catégories à récupérer au max
+    
+    

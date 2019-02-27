@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tvheadend
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: tv.leangeder.eu
+    http:
+      paths:
+      - backend:
+          serviceName: tvheadend
+          servicePort: http

@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: emby
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.frontend.passHostHeader: "true"
+    traefik.backend.loadbalancer.stickey: "true"
+spec:
+  rules:
+  - host: media.leangeder.eu
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: emby
+          servicePort: http

@@ -26,14 +26,17 @@ spec:
           mountPath: /config
           subPath: docker/ubooquity
         - name: ubooquity
-          mountPath: /books
-          subPath: Ebooks/Books
+          mountPath: /downloads/Comics
+          subPath: downloads/Comics
         - name: ubooquity
-          mountPath: /comics
-          subPath: Ebooks/Comics
+          mountPath: /downloads/Books
+          subPath: downloads/Books
         - name: ubooquity
-          mountPath: /files
-          subPath: Ebooks/Files
+          mountPath: /downloads/Files
+          subPath: downloads/Files
+        # - name: ubooquity
+        # - mountPath: /comics
+        # - subPath: Ebooks/Comics
       volumes:
       - name: ubooquity
         glusterfs:

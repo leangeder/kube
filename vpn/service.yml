@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: vpn
+spec:
+  ports:
+    - name: openvpn
+      port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
+      protocol: {{ .Values.openvpn.OVPN_PROTO | upper }}
+  selector:
+    app: {{ template "openvpn.name" . }}
+    release: {{ .Release.Name }}
+  type: {{ .Values.service.type }}

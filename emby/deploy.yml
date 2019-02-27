@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: emby
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: emby
+    spec:
+      containers:
+      - name: emby
+        image: emby/embyserver:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8096
+        - containerPort: 8920
+        env:
+        - name: GID
+          value: "100"
+        - name: UID
+          value: "1000"
+        - name: GIDLIST
+          value: "100"
+        volumeMounts:
+        - name: emby
+          mountPath: /config
+          subPath: docker/emby
+        - name: emby
+          mountPath: /downloads
+          subPath: downloads
+        - name: emby
+          mountPath: /tv
+          subPath: Series
+        - name: emby
+          mountPath: /movies
+          subPath: Movies
+        - name: emby
+          mountPath: /music
+          subPath: Music
+        - name: emby
+          mountPath: /comics
+          subPath: Comics
+        - name: emby
+          mountPath: /books
+          subPath: Ebooks/add
+      volumes:
+      - name: emby
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

@@ -11,15 +11,33 @@ spec:
     spec:
       containers:
       - name: server
+        # image: debian
+        # command:
+        # - /bin/sh
+        # - -c
+        # - >
+        #   sleep infinity;
         image: regueiro/calibre-server:latest
         imagePullPolicy: Always
-        args:
-        - "--listen-on=0.0.0.0"
-        - "--enable-local-write"
-        - "--enable-log-not-found"
-        - "--url-prefix=/Books"
-        - "--log=/dev/stderr"
-        - "--access-log=/dev/stdout"
+        command:
+        - /bin/sh
+        - -c
+        - >
+          sleep infinity;
+        # args:
+        # - "--listen-on=0.0.0.0"
+        # - "--enable-local-write"
+        # - "--enable-log-not-found"
+        # - "--url-prefix=/Books"
+        # - "--log=/dev/stderr"
+        # - "--access-log=/dev/stdout"
+        # - "--userdb"
+        # - "/root/.config/calibre/server-users.sqlite"
+        # - "--enable-auth"
+        # - "/opt/calibre/library"
+        # # env:
+        # # - name: LANG
+        # #   value: fr_FR
         ports:
         - name: calibre
           containerPort: 8080
@@ -30,6 +48,9 @@ spec:
         - name: calibre
           mountPath: /opt/calibre/library
           subPath: Ebooks/Library
+        - name: calibre
+          mountPath: /download
+          subPath: downloads/Books
       # - name: auto-add
       #   image: regueiro/calibre-server:latest
       #   imagePullPolicy: Always

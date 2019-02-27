@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: radicale
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: radicale
+    spec:
+      containers:
+      - name: radicale
+        image: leangeder/radicale
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5232
+        volumeMounts:
+        - name: radicale
+          mountPath: /config
+          subPath: docker/radicale
+        - name: radicale
+          mountPath: /data
+          subPath: Others/radicale
+        - name: current-config
+          mountPath: /etc/radicale/config
+          subPath: config
+      volumes:
+      - name: radicale
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
+      - name: current-config
+        configMap:
+          name: config.general.radicale

@@ -12,12 +12,13 @@ spec:
       containers:
       - name: beets
         image: linuxserver/beets
-        # command:
-        # - "/bin/sh"
-        # - "-xc"
-        # - >
-        #   apk -U add beets;
-        #   beets --stdout --no-daemon --verbose;
+        command:
+        - "/bin/sh"
+        - "-xc"
+        - >
+          beet --verbose import /downloads/ -l ~/.config/beets/$(date +"%m-%d-%Y-%H-%M-%S").log;
+          # apk -U add beets;
+          # beets --stdout --no-daemon --verbose;
         ports:
         # - name: db
         #   containerPort: 6600
@@ -33,9 +34,9 @@ spec:
         - name: beets
           mountPath: /config
           subPath: docker/beets
-        - name: current-config
-          mountPath: /etc/mpd.conf
-          subPath: mpd.conf
+        # - name: current-config
+        #   mountPath: /etc/beets.conf
+        #   subPath: beets.conf
       volumes:
       - name: beets
         glusterfs:

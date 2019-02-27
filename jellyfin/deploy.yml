@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+      - name: jellyfin
+        image: docker.io/jellyfin/jellyfin 
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8096
+        - containerPort: 8920
+        env:
+        - name: GID
+          value: "100"
+        - name: UID
+          value: "1000"
+        - name: GIDLIST
+          value: "100"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        volumeMounts:
+        - name: jellyfin
+          mountPath: /config
+          subPath: docker/jellyfin
+        - name: jellyfin
+          mountPath: /downloads
+          subPath: downloads
+        - name: jellyfin
+          mountPath: /tv
+          subPath: Series
+        - name: jellyfin
+          mountPath: /movies
+          subPath: Movies
+        - name: jellyfin
+          mountPath: /music
+          subPath: Music
+        - name: jellyfin
+          mountPath: /comics
+          subPath: Comics
+        - name: jellyfin
+          mountPath: /books
+          subPath: Ebooks/add
+      volumes:
+      - name: jellyfin
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

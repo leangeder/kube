@@ -46,20 +46,20 @@ spec:
         - containerPort: 80
         volumeMounts:
         - name: nginx
-          mountPath: /usr/share/nginx/html/Movies
+          mountPath: /usr/share/nginx/html/Movies/
           subPath: Movies
         - name: nginx
-          mountPath: /usr/share/nginx/html/Series
+          mountPath: /usr/share/nginx/html/Series/
           subPath: Series
         - name: nginx
           mountPath: /usr/share/nginx/html/Music/
           subPath: Music
-        # - name: nginx
-        #   mountPath: /usr/share/nginx/html/Ebooks
-        #   subPath: Ebooks
-        # - name: nginx
-        #   mountPath: /usr/share/nginx/html/Others
-        #   subPath: Others
+        - name: nginx
+          mountPath: /usr/share/nginx/html/Ebooks/
+          subPath: Ebooks
+        - name: nginx
+          mountPath: /usr/share/nginx/html/Others/
+          subPath: Others
         - name: current-config
           # mountPath: /etc/nginx/conf.d
           mountPath: /etc/nginx/sites-enabled

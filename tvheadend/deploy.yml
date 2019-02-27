@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tvheadend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tvheadend
+    spec:
+      containers:
+      - name: tvheadend
+        image: linuxserver/tvheadend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9981
+        - containerPort: 9982
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: "Europe/Paris"
+        volumeMounts:
+        - name: tvheadend
+          mountPath: /config
+          subPath: docker/tvheadend
+        - name: tvheadend
+          mountPath: /recordings
+          subPath: Others/Recordings
+      volumes:
+      - name: tvheadend
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false
