@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traefik
+  namespace: kube-system
+  annotations:
+      # traefik.frontend.rule.type: PathPrefix
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.global-static-ip-name: "beamery-global-ip"
+    # kubernetes.io/ingress.class: traefik
+    # ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-secret: dashboard-auth
+spec:
+  backend:
+    serviceName: traefik
+    servicePort: 80
+  # rules:
+  # - http:
+  #     paths:
+  #     - backend:
+  #         serviceName: traefik
+  #         servicePort: http

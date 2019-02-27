@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: libreoffice
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: libreoffice
+    spec:
+      containers:
+      - name: libreoffice
+        image: libreoffice/online:master
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9980
+        env:
+        - name: domain
+          value: "office.leangeder.eu"
+        volumeMounts:
+        - name: libreoffice
+          mountPath: /config
+          subPath: docker/libreoffice
+        - name: libreoffice
+          mountPath: /data
+          subPath: Others/LibreOffice
+      volumes:
+      - name: libreoffice
+        glusterfs:
+          endpoints: glusterfs-cluster
+          path: data
+          readOnly: false

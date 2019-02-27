@@ -29,8 +29,8 @@ spec:
         volumeMounts:
         - name: "config"
           mountPath: "/config"
-        - name: "acme"
-          mountPath: "/acme"
+        # - name: "acme"
+        #   mountPath: "/acme"
         readinessProbe:
           tcpSocket:
             port: 80
@@ -68,6 +68,6 @@ spec:
       - name: config
         configMap:
           name: traefik-conf
-      - name: acme
-        hostPath:
-         path: /opt/docker/traefik
+      # - name: acme
+      #   hostPath:
+      #    path: /opt/docker/traefik

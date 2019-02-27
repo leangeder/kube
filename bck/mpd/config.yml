@@ -1,0 +1,165 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config.general.mpd
+data:
+  mpd.conf: |
+    # Files and directories #######################################################
+    #
+    music_directory                   "/var/lib/mpd/Music/"
+    #
+    # playlist_directory                "~/.config/mpd/playlists"
+    playlist_directory                "/var/lib/mpd/playlists"
+    #
+    # db_file                           "~/.config/mpd/database"
+    db_file                           "/var/lib/mpd/database"
+    #
+    # log_file                          "~/.config/mpd/log"
+    log_file                          "/var/lib/mpd/log"
+    #
+    # pid_file                          "~/.config/mpd/pid"
+    pid_file                          "/var/lib/mpd/pid"
+    #
+    # state_file                        "~/.config/mpd/state"
+    state_file                        "/var/lib/mpd/state"
+    #
+    # sticker_file                      "~/.config/mpd/sticker.sql"
+    sticker_file                      "/var/lib/mpd/sticker.sql"
+    #
+    ###############################################################################
+    #
+    # General music daemon options ################################################
+    #
+    user                              "mpd"
+    #
+    group                             "audio"
+    #
+    bind_to_address                   "0.0.0.0"
+    #
+    port                              "6600"
+    #
+    log_level                         "verbose"
+    #
+    # gapless_mp3_playback              "yes"
+    #
+    restore_paused                    "yes"
+    #
+    save_absolute_paths_in_playlists  "no"
+    #
+    metadata_to_use                   "artist,album,title,track,name,genre,date,composer,performer,disc"
+    #
+    auto_update                       "yes"
+    #
+    auto_update_depth                 "3"
+    #
+    ###############################################################################
+    #
+    # Symbolic link behavior ######################################################
+    #
+    follow_outside_symlinks           "yes"
+    #
+    follow_inside_symlinks            "yes"
+    #
+    #############################################################################
+    #
+    # Zeroconf / Avahi Service Discovery ##########################################
+    #
+    zeroconf_enabled                  "no"
+    #
+    # zeroconf_name                    "Music Player"
+    #
+    #############################################################################
+    #
+    # Permissions #################################################################
+    #
+    #password                          "password@read,add,control,admin"
+    #
+    #default_permissions               "read,add,control,admin"
+    #
+    ###############################################################################
+    #
+    # Plugin ######################################################################
+    # 
+    playlist_plugin {
+            name                      "soundcloud"
+            enabled                   "true"
+            apikey                    "996b80ae0f23615f5e3f2faa414c1eca"
+    }
+    #
+    ###############################################################################
+    #
+    # Input #######################################################################
+    #
+    input {
+            plugin                    "curl"
+    #        proxy                     "proxy.isp.com:8080"
+    #        proxy_user                "user"
+    #        proxy_password            "password"
+    }
+    #
+    ###############################################################################
+    #
+    # Audio Output ################################################################
+    #
+    audio_output {
+            type                      "httpd"
+            name                      "My HTTP Stream"
+            encoder                   "vorbis"      # optional, vorbis or lame
+            port                      "8080"
+            # quality                   "5.0"         # do not define if bitrate is defined
+            #bitrate                   "128"         # do not define if quality is defined
+            # format                    "44100:16:1"
+            bitrate                   "96"         # do not define if quality is defined
+            format                    "44100:16:2"
+            max_clients               "0"           # optional 0=no limit
+            always_on                 "yes"
+            tags                      "yes"
+    }
+    audio_output {
+            type                      "pulse"
+            name                      "PulseAudio server Stream"
+            # sink                      "rtp.monitor"
+            server                    "pulseaudio"
+    }
+    #
+    # audio_output {
+    #         type                      "null"
+    #         name                      "My Null Output"
+    #         mixer_type                "none"        # optional
+    # }
+    #
+    # audio_output {
+    #    type                           "fifo"
+    #    name                           "fifo"
+    #    path                           "/tmp/mpd.fifo"
+    #    # format                         "44100:16:1"
+    #    format                        "44100:16:2"
+    # }
+    #
+    samplerate_converter             "Fastest Sinc Interpolator"
+    # samplerate_converter             "Best Sinc Interpolator"
+    #
+    ###############################################################################
+    #
+    # Normalization automatic volume adjustments ##################################
+    #
+    # replaygain                       "album"
+    #
+    # replaygain_preamp                "0"
+    #
+    # reiplaygain_missing_preamp       "0"
+    #
+    # replaygain_limit                 "yes"
+    #
+    # volume_normalization             "no"
+    #
+    ###############################################################################
+    #
+    # Character Encoding ##########################################################
+    #
+    filesystem_charset                "UTF-8"
+    #
+    id3v1_encoding                    "UTF-8"
+    #
+    ###############################################################################

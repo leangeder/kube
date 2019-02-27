@@ -25,11 +25,17 @@ spec:
           mountPath: /config
           subPath: docker/lazylibrarian
         - name: lazylibrarian
-          mountPath: /downloads
-          subPath: downloads/Books
-        - name: lazylibrarian
           mountPath: /books
           subPath: Ebooks/add
+        - mountPath: /downloads/Comics
+          name: lazylibrarian
+          subPath: downloads/Comics
+        - mountPath: /downloads/Books
+          name: lazylibrarian
+          subPath: downloads/Books
+        - mountPath: /downloads/Files
+          name: lazylibrarian
+          subPath: downloads/Files
       volumes:
       - name: lazylibrarian
         glusterfs:

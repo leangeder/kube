@@ -1,3 +1,4 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -14,22 +15,37 @@ spec:
         image: syncthing/syncthing
         imagePullPolicy: Always
         ports:
-        - containerPort: 8989
-        env:
-        - name: PGID
-          value: "1000"
-        - name: PUID
-          value: "1000"
+        - containerPort: 8384
+        - containerPort: 22000
+        - containerPort: 21027
         volumeMounts:
         - name: syncthing
           mountPath: /config
           subPath: docker/syncthing
         - name: syncthing
-          mountPath: /downloads
-          subPath: downloads/Series
+          mountPath: /var/syncthing
+          subPath: Others/syncthing
         - name: syncthing
-          mountPath: /tv
+          mountPath: /Others
+          subPath: Others
+        - name: syncthing
+          mountPath: /Movies
+          subPath: Movies
+        - name: syncthing
+          mountPath: /Series
           subPath: Series
+        - name: syncthing
+          mountPath: /Music
+          subPath: Music
+        - name: syncthing
+          mountPath: /Books
+          subPath: Ebooks/Books
+        - name: syncthing
+          mountPath: /Comics
+          subPath: Ebooks/Comics
+        - name: syncthing
+          mountPath: /Files
+          subPath: Ebooks/Files
       volumes:
       - name: syncthing
         glusterfs:

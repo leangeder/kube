@@ -22,6 +22,9 @@ data:
 
     [kubernetes]
 
+    [ping]
+    entryPoint = "http"
+
     [api]
       [api.statistics]
         recentErrors = 10
@@ -33,17 +36,17 @@ data:
     [web.metrics.prometheus]
       Buckets = [0.1,0.3,1.2,5.0]
 
-    [acme]
-    email = "40153@supinfo.com"
-    storage = "/acme/acme.json"
-    entryPoint = "https"
-    acmeLogging = true
-    onDemand = true
-    # onHostRule = true
-      [[acme.domains]]
-        main = "*.leangeder.eu"
-        sans = ["leangeder.com"]
-        # sans = ["leangeder.com", "movie.leangeder.com", "serie.leangeder.eu", "file"]
+    # [acme]
+    # # email = "40153@supinfo.com"
+    # storage = "/acme/acme.json"
+    # entryPoint = "https"
+    # acmeLogging = true
+    # onDemand = true
+    # # # onHostRule = true
+    # #   [[acme.domains]]
+    # #     main = "*.leangeder.eu"
+    # #     sans = ["leangeder.com"]
+    # #     # sans = ["leangeder.com", "movie.leangeder.com", "serie.leangeder.eu", "file"]
 
-    [acme.httpChallenge]
-      entryPoint="http"
+    # [acme.httpChallenge]
+    #   entryPoint="http"

@@ -1,17 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: syncthing
+  name: libreoffice
   annotations:
     kubernetes.io/ingress.class: "traefik"
     traefik.frontend.passHostHeader: "true"
     traefik.backend.loadbalancer.stickey: "true"
 spec:
   rules:
-  - host: sync.leangeder.eu
+  - host: office.leangeder.eu
     http:
       paths:
       - path: /
         backend:
-          serviceName: syncthing-ui
+          serviceName: libreoffice
           servicePort: http

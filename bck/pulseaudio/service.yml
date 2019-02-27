@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pulseaudio
+  labels:
+    app: pulseaudio
+spec:
+  ports:
+  - name: rtp-tcp
+    port: 5004
+    protocol: TCP
+  - name: rtp-udp
+    port: 5004
+    protocol: UDP
+  - name: pulseaudio
+    port: 4317
+  selector:
+    app: pulseaudio
+  externalIPs:
+  - 62.210.14.17
