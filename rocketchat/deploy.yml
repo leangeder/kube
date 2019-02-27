@@ -34,7 +34,7 @@ spec:
         resources:
           requests:
             memory: 256Mi
-            cpu: 100M
+            # cpu: 100M
         # resources:
         #   requests:
         #     memory: 256Mi
@@ -104,7 +104,7 @@ spec:
         resources:
           requests:
             memory: 512Mi
-            cpu: 300m
+            # cpu: 300m
         # resources:
         #   requests:
         #     memory: 512Mi
